@@ -163,7 +163,7 @@ class ComposioAgent:
             self.prompt = hub.pull("hwchase17/openai-functions-agent")
             self.composio_toolset = ComposioToolSet(entity_id=self.user)
             self.actions = self.composio_toolset.get_tools(apps=[App.GOOGLECALENDAR])  
-            logging.info(f"Successfully connected to Composio services for user {self.user} at {current_datetime}")
+            logging.info(f"Successfully connected to Composio services for user {self.user}")
         except Exception as e:
             logging.error(f"Connection failed: {e}")
             return False
