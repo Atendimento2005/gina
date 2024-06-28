@@ -5,6 +5,7 @@ import asyncio
 from dotenv import load_dotenv
 import json
 import os
+import datetime
 
 load_dotenv()
 
@@ -49,6 +50,7 @@ async def on_message(message):
         command = message.content.replace(f"@{bot.user.name}", "").strip()
         user_id = str(message.author.id)
         discord_channel = message.channel
+        current_datetime = datetime.datetime.now()
 
         # Check if the user is in the mock database
         if user_id not in user_database:

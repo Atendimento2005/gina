@@ -1,7 +1,7 @@
 from langchain.agents import create_openai_functions_agent, AgentExecutor
 from langchain import hub
 from langchain_openai import ChatOpenAI
-from composio_langchain import ComposioToolSet, Action, App
+from composio_langchain import ComposioToolSet, Action, App, Tag
 from composio import Composio, App
 from dotenv import load_dotenv
 import os
@@ -134,7 +134,7 @@ class ComposioAgent:
 
         try:
             # Define the apps you want to connect
-            apps = ["gmail"]
+            apps = ["googlecalendar"]
             
             for app in apps:
                 if app not in self.connected_accounts:
@@ -163,9 +163,7 @@ class ComposioAgent:
 
             self.prompt = hub.pull("hwchase17/openai-functions-agent")
             self.composio_toolset = ComposioToolSet(entity_id=self.user)
-            self.actions = self.composio_toolset.get_tools(apps=[
-                App.GMAIL
-            ])
+            self.actions = self.composio_toolset.get_tools(apps=[App.GOOGLECALENDAR])  
             logging.info(f"Successfully connected to Composio services for user {self.user}")
         except Exception as e:
             logging.error(f"Connection failed: {e}")
