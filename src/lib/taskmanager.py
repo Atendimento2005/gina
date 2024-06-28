@@ -116,7 +116,7 @@ class ComposioAgent:
                 raise
         return params
 
-    async def connect(self) -> bool:
+    async def connect(self,author) -> bool:
         """
         Asynchronously connects to Composio services for the user.
 
@@ -149,7 +149,7 @@ class ComposioAgent:
                     connection_request = self.entity.initiate_connection(app_name=app)
                     print(connection_request)
                     if connection_request.redirectUrl:
-                        await self.discord_channel.send(f"Please complete the auth flow: {connection_request.redirectUrl}")
+                        await author.send(f"Please complete the auth flow: {connection_request.redirectUrl}")
                         
                         connection_account = await self.wait_for_connection_active(connection_request, 120)
                         

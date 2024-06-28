@@ -3,15 +3,21 @@ from discord.ext import commands
 from lib.taskmanager import ComposioAgent
 import asyncio
 from dotenv import load_dotenv
+import json
 import os
 
 load_dotenv()
 
+def load_db():
+    with open("db.json","r") as f:
+        user_database=json.load(f)
+        return user_database
+    
+def save_db(curr_database):
+    with open("db.json","w") as f:
+        json.dump(curr_database,f)
 
-# Mock database
-user_database = {
-    # 'discord_user_id': 'user_id@example.com'
-}
+user_database = load_db()
 
 intents = discord.Intents.default()
 intents.messages = True
@@ -39,18 +45,19 @@ async def on_message(message):
         if user_id not in user_database:
             #Create new account
             user_database[user_id] = message.author.id
-            embed = discord.Embed(description="New account has been created!", color=0x00FF00)
+            save_db(user_database)
+            embed = discord.Embed(description="Check private message for instructions", color=0x00FF00)
             await discord_channel.send(embed=embed)
             
         else:
-            user_id = user_database[user_id]
+            user_id = str(user_database[user_id])
 
         # Proceed with ComposioAgent
         if user_id not in user_agents:
             user_agents[user_id] = ComposioAgent(user_id, discord_channel, bot=bot)
 
         agent = user_agents[user_id]
-        if not await agent.connect():
+        if not await agent.connect(message.author):
             embed = discord.Embed(title="Connection Failed", description="Failed to connect to Composio services.", color=0xFF0000)
             await discord_channel.send(embed=embed)
             return
