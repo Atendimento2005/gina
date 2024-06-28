@@ -149,7 +149,8 @@ class ComposioAgent:
                     connection_request = self.entity.initiate_connection(app_name=app)
                     print(connection_request)
                     if connection_request.redirectUrl:
-                        await author.send(f"Please complete the auth flow: {connection_request.redirectUrl}")
+                        embed=discord.Embed(title="Link",url=f"{connection_request.redirectUrl}",description="Please click on the link to complete the auth flow",color=0xFF0000)
+                        await author.send(embed=embed)
                         
                         connection_account = await self.wait_for_connection_active(connection_request, 120)
                         

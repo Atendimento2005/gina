@@ -9,6 +9,8 @@ import datetime
 
 load_dotenv()
 
+msg_cache=[]
+
 def load_db():
     with open("db.json","r") as f:
         user_database=json.load(f)
@@ -36,6 +38,13 @@ async def on_ready():
 async def on_message(message):
     if message.author == bot.user:
         return
+    
+    if len(msg_cache)<20:
+        msg_cache.append([message.author.name,message.content])
+    else:
+        msg_cache.pop(0)
+        msg_cache.append([message.author.name,message.content])
+    print(msg_cache)
 
     if bot.user.mentioned_in(message):
         command = message.content.replace(f"@{bot.user.name}", "").strip()
@@ -65,14 +74,14 @@ async def on_message(message):
         agent = user_agents[user_id]
         if not await agent.connect(message.author):
             embed = discord.Embed(title="Connection Failed", description="Failed to connect to Composio services.", color=0xFF0000)
-            await discord_channel.send(embed=embed)
+            await message.reply(embed=embed)
             return
 
         if await agent.doTask(command):
             embed = discord.Embed(title="Success", description=f"Task completed successfully for {message.author.name}.", color=0x00FF00)
-            await discord_channel.send(embed=embed)
+            await message.reply(embed=embed)
         else:
             embed = discord.Embed(title="Task Failed", description="Failed to complete the task.", color=0xFF0000)
-            await discord_channel.send(embed=embed)
+            await message.reply(embed=embed)
             
 bot.run(os.environ["DISCORD_BOT_TOKEN"])
