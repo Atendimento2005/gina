@@ -12,6 +12,9 @@ import asyncio
 import discord
 from discord.ext import commands
 
+import datetime
+import pytz
+
 load_dotenv()
 
 llm = ChatOpenAI(openai_api_key=os.environ["OPENAI_API_KEY"])
@@ -192,10 +195,10 @@ class ComposioAgent:
         try:
             agent = create_openai_functions_agent(llm, self.actions, self.prompt)
             agent_executor = AgentExecutor(agent=agent, tools=self.actions, verbose=True)
-            agent_executor.invoke({"input": command})
+            print("printing....")
+            res = agent_executor.invoke({"input": f"The current date and time is {datetime.datetime.now(pytz.UTC)}" + command})
             logging.info(f"Task '{command}' completed successfully for user {self.user}")
+            return res["output"]
         except Exception as e:
             logging.error(f"Failed to complete task: {e}")
             return False
-        
-        return True

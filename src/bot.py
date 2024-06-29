@@ -77,9 +77,8 @@ async def on_message(message):
             await message.reply(embed=embed)
             return
 
-        if await agent.doTask(command):
-            embed = discord.Embed(title="Success", description=f"Task completed successfully for {message.author.name}.", color=0x00FF00)
-            await message.reply(embed=embed)
+        if res := await agent.doTask(command):
+            await message.reply(res)
         else:
             embed = discord.Embed(title="Task Failed", description="Failed to complete the task.", color=0xFF0000)
             await message.reply(embed=embed)
